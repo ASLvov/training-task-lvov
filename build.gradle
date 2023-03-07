@@ -1,0 +1,70 @@
+plugins {
+    id 'io.jmix' version '1.4.3'
+    id 'java'
+}
+
+apply plugin: 'org.springframework.boot'
+
+jmix {
+    bomVersion = '1.4.4'
+    projectId = 'ttl'
+}
+
+group = 'ru.gazprom.gptrans'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    maven {
+        allowInsecureProtocol = true
+        url 'http://mos-nrepo-alt:8081/repository/jmix_global/'
+    }
+    maven {
+        allowInsecureProtocol = true
+        url 'http://mos-nrepo-alt:8081/repository/jmix_premium/'
+    }
+    maven {
+        allowInsecureProtocol = true
+        url 'http://mos-nrepo-alt:8081/repository/Maven_Repo/'
+    }
+    maven {
+        allowInsecureProtocol = true
+        url 'http://mos-nrepo-alt:8081/repository/Gradle_Repo/'
+    }
+    maven {
+        allowInsecureProtocol = true
+        url 'http://mos-rep-ol7.gptrans.gazprom.ru:8082/artifactory/jmix_premium/'
+    }
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'io.jmix.core:jmix-core-starter'
+    implementation 'io.jmix.data:jmix-eclipselink-starter'
+    implementation 'io.jmix.ui:jmix-ui-starter'
+    implementation 'io.jmix.ui:jmix-ui-data-starter'
+    implementation 'io.jmix.ui:jmix-ui-themes-compiled'
+    implementation 'io.jmix.ui:jmix-ui-widgets-compiled'
+    implementation 'io.jmix.security:jmix-security-starter'
+    implementation 'io.jmix.security:jmix-security-ui-starter'
+    implementation 'io.jmix.security:jmix-security-data-starter'
+    implementation 'io.jmix.localfs:jmix-localfs-starter'
+    implementation 'io.jmix.datatools:jmix-datatools-starter'
+    implementation 'io.jmix.datatools:jmix-datatools-ui-starter'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    implementation 'org.postgresql:postgresql'
+    implementation 'io.jmix.bpm:jmix-bpm-starter'
+    implementation 'io.jmix.bpm:jmix-bpm-ui-starter'
+    implementation 'io.jmix.reports:jmix-reports-ui-starter'
+    implementation 'io.jmix.reports:jmix-reports-rest-starter'
+    implementation 'io.jmix.reports:jmix-reports-starter'
+}
+
+test {
+    useJUnitPlatform()
+}

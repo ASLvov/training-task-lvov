@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="ttl">
+        <createTable tableName="TTL_ORGANIZATION">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TTL_ORGANIZATION"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="TAX_NUMBER" type="VARCHAR(255)"/>
+            <column name="REGISTRATION_NUMBER" type="VARCHAR(255)"/>
+            <column name="ESCAPE_VAT" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="DELETED_BY" type="VARCHAR(255)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="ttl">
+        <createIndex indexName="IDX_TTL_ORGANIZATION" tableName="TTL_ORGANIZATION">
+            <column name="NAME"/>
+            <column name="TAX_NUMBER"/>
+            <column name="REGISTRATION_NUMBER"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="3" author="ttl">
+        <createTable tableName="TTL_CONTRACT">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TTL_CONTRACT"/>
+            </column>
+            <column name="CUSTOMER_ID" type="UUID"/>
+            <column name="PERFORMER_ID" type="UUID"/>
+            <column name="NUMBER_" type="VARCHAR(255)"/>
+            <column name="SIGNED_DATE" type="DATETIME"/>
+            <column name="TYPE_" type="VARCHAR(255)"/>
+            <column name="DATE_FROM" type="DATETIME"/>
+            <column name="DATE_TO" type="DATETIME"/>
+            <column name="AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="VAT" type="DECIMAL(19, 2)"/>
+            <column name="TOTAL_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="CUSTOMER_SIGNER" type="VARCHAR(255)"/>
+            <column name="PERFORMER_SIGNER" type="VARCHAR(255)"/>
+            <column name="STATUS_ID" type="UUID"/>
+            <column name="FILES" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="DELETED_BY" type="VARCHAR(255)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="ttl">
+        <createTable tableName="TTL_INVOICE">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TTL_INVOICE"/>
+            </column>
+            <column name="NUMBER_" type="VARCHAR(255)"/>
+            <column name="DATE_" type="DATETIME"/>
+            <column name="AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="VAT" type="DECIMAL(19, 2)"/>
+            <column name="TOTAL_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="DESCRIPTION" type="CLOB"/>
+            <column name="FILES" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="DELETED_BY" type="VARCHAR(255)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="5" author="ttl">
+        <createTable tableName="TTL_SERVICE_COMPLETION_CERTIFICATE">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TTL_SERVICE_COMPLETION_CERTIFICATE"/>
+            </column>
+            <column name="NUMBER_" type="VARCHAR(255)"/>
+            <column name="DATE_" type="DATETIME"/>
+            <column name="AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="VAT" type="DECIMAL(19, 2)"/>
+            <column name="TOTAL_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="DESCRIPTION" type="CLOB"/>
+            <column name="FILES" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="DELETED_BY" type="VARCHAR(255)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="6" author="ttl">
+        <createTable tableName="TTL_STAGE">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TTL_STAGE"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="DATE_FROM" type="DATETIME"/>
+            <column name="DATE_TO" type="DATETIME"/>
+            <column name="AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="VAT" type="DECIMAL(19, 2)"/>
+            <column name="TOTAL_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="DESCRIPTION" type="CLOB"/>
+            <column name="INVOICE_ID" type="UUID"/>
+            <column name="SERVICE_COMPLETION_CERTIFICATE_ID" type="UUID"/>
+            <column name="CONTRACT_ID" type="UUID"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="DELETED_BY" type="VARCHAR(255)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="7" author="ttl">
+        <createTable tableName="TTL_STATUS">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TTL_STATUS"/>
+            </column>
+            <column name="CODE" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="8" author="ttl">
+        <createIndex indexName="IDX_TTL_CONTRACT_CUSTOMER" tableName="TTL_CONTRACT">
+            <column name="CUSTOMER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="CUSTOMER_ID" baseTableName="TTL_CONTRACT"
+                                 constraintName="FK_TTL_CONTRACT_ON_CUSTOMER" referencedColumnNames="ID"
+                                 referencedTableName="TTL_ORGANIZATION"/>
+    </changeSet>
+    <changeSet id="9" author="ttl">
+        <createIndex indexName="IDX_TTL_CONTRACT_PERFORMER" tableName="TTL_CONTRACT">
+            <column name="PERFORMER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PERFORMER_ID" baseTableName="TTL_CONTRACT"
+                                 constraintName="FK_TTL_CONTRACT_ON_PERFORMER" referencedColumnNames="ID"
+                                 referencedTableName="TTL_ORGANIZATION"/>
+    </changeSet>
+    <changeSet id="10" author="ttl">
+        <createIndex indexName="IDX_TTL_CONTRACT_STATUS" tableName="TTL_CONTRACT">
+            <column name="STATUS_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="STATUS_ID" baseTableName="TTL_CONTRACT"
+                                 constraintName="FK_TTL_CONTRACT_ON_STATUS" referencedColumnNames="ID"
+                                 referencedTableName="TTL_STATUS"/>
+    </changeSet>
+    <changeSet id="11" author="ttl">
+        <createIndex indexName="IDX_TTL_STAGE_INVOICE" tableName="TTL_STAGE">
+            <column name="INVOICE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="INVOICE_ID" baseTableName="TTL_STAGE"
+                                 constraintName="FK_TTL_STAGE_ON_INVOICE" referencedColumnNames="ID"
+                                 referencedTableName="TTL_INVOICE"/>
+    </changeSet>
+    <changeSet id="12" author="ttl">
+        <createIndex indexName="IDX_TTL_STAGE_SERVICE_COMPLETION_CERTIFICATE" tableName="TTL_STAGE">
+            <column name="SERVICE_COMPLETION_CERTIFICATE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="SERVICE_COMPLETION_CERTIFICATE_ID" baseTableName="TTL_STAGE"
+                                 constraintName="FK_TTL_STAGE_ON_SERVICE_COMPLETION_CERTIFICATE"
+                                 referencedColumnNames="ID" referencedTableName="TTL_SERVICE_COMPLETION_CERTIFICATE"/>
+    </changeSet>
+    <changeSet id="13" author="ttl">
+        <createIndex indexName="IDX_TTL_STAGE_CONTRACT" tableName="TTL_STAGE">
+            <column name="CONTRACT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="CONTRACT_ID" baseTableName="TTL_STAGE"
+                                 constraintName="FK_TTL_STAGE_ON_CONTRACT" referencedColumnNames="ID"
+                                 referencedTableName="TTL_CONTRACT"/>
+    </changeSet>
+</databaseChangeLog>
