@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menu-config xmlns="http://jmix.io/schema/ui/menu">
+
+    <menu id="bpm">
+        <item screen="bpm_StartProcessScreen"/>
+        <item screen="bpm_MyTasks.browse"/>
+        <item screen="bpm_BpmnModelerScreen"/>
+        <item screen="bpm_ProcessDefinition.browse"/>
+        <item screen="bpm_ProcessInstance.browse"/>
+        <item screen="bpm_UserGroup.browse"/>
+        <item screen="bpm_AllTasks.browse"/>
+        <item screen="bpm_DmnDecisionTableBrowse"/>
+        <item screen="bpm_DecisionTableModelerScreen"/>
+    </menu>
+    <menu id="reports" caption="msg://io.jmix.reportsui/menu.reports">
+        <item id="report_Report.browse" caption="msg://io.jmix.reportsui/menu.report_Report.browse"/>
+        <item id="report_ReportGroup.browse" caption="msg://io.jmix.reportsui/menu.report_ReportGroup.browse"/>
+        <item id="report_Report.run" caption="msg://io.jmix.reportsui/menu.report_Report.run"/>
+        <item id="report_ShowChart.screen" caption="msg://io.jmix.reportsui/menu.report_ShowChart.screen"/>
+        <item id="report_ShowReportTable.screen" caption="msg://io.jmix.reportsui/menu.report_ShowReportTable.screen"/>
+        <item id="report_ShowPivotTable.screen" caption="msg://io.jmix.reportsui/menu.report_ShowPivotTable.screen"/>
+    </menu>
+    <menu id="application" caption="msg://ru.gazprom.gptrans.trainingtasklvov/menu.application">
+        <item screen="ttl_Contract.browse"
+              caption="msg://ru.gazprom.gptrans.trainingtasklvov.screen.contract/contractBrowse.menu"/>
+        <item screen="ttl_Organization.browse"
+              caption="msg://ru.gazprom.gptrans.trainingtasklvov.screen.organization/organizationBrowse.menu"/>
+        <item screen="ttl_Stage.browse"
+              caption="msg://ru.gazprom.gptrans.trainingtasklvov.screen.stage/stageBrowse.menu"/>
+        <item screen="ttl_Invoice.browse"
+              caption="msg://ru.gazprom.gptrans.trainingtasklvov.screen.invoice/invoiceBrowse.menu"/>
+        <item screen="ttl_ServiceCompletionCertificate.browse"
+              caption="msg://ru.gazprom.gptrans.trainingtasklvov.screen.servicecompletioncertificate/serviceCompletionCertificateBrowse.menu"/>
+    </menu>
+    <menu id="administration">
+        <item screen="ui_JmxConsoleScreen"/>
+        <item screen="sec_ResourceRoleModel.browse"
+              caption="msg://io.jmix.securityui/menu.sec_ResourceRoleModel.browse"/>
+        <item screen="sec_RowLevelRoleModel.browse"
+              caption="msg://io.jmix.securityui/menu.sec_RowLevelRoleModel.browse"/>
+        <item screen="entityInspector.browse"/>
+        <item screen="email_SendingMessage.browse"/>
+        <item screen="themeSettingsScreen" caption="msg://io.jmix.ui.app.themesettings/themeSettings.caption"/>
+        <item screen="ttl_User.browse"
+              caption="msg://ru.gazprom.gptrans.trainingtasklvov.screen.user/UserBrowse.caption"/>
+    </menu>
+</menu-config>

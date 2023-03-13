@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://stageBrowse.caption"
+        focusComponent="stagesTable">
+    <data readOnly="true">
+        <collection id="stagesDc"
+                    class="ru.gazprom.gptrans.trainingtasklvov.entity.Stage">
+            <fetchPlan extends="_base">
+                <property name="invoice" fetchPlan="_base"/>
+                <property name="serviceCompletionCertificate" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="stagesDl">
+                <query>
+                    <![CDATA[select e from ttl_Stage e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="stagesTable" spacing="true">
+        <dataGrid id="stagesTable" height="100%" width="100%" dataContainer="stagesDc">
+            <actions>
+                <action id="edit" type="edit"/>
+                <action id="refresh" type="refresh"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <buttonsPanel alwaysVisible="true">
+                <button id="stagesTableEditBtn" action="stagesTable.edit"/>
+                <button id="stagesTableRefreshBtn" action="stagesTable.refresh"/>
+                <button id="stagesTableRemoveBtn" action="stagesTable.remove"/>
+            </buttonsPanel>
+            <columns>
+                <column id="name" property="name"/>
+                <column id="dateFrom" property="dateFrom"/>
+                <column id="dateTo" property="dateTo"/>
+                <column id="amount" property="amount"/>
+                <column id="vat" property="vat"/>
+                <column id="totalAmount" property="totalAmount"/>
+                <column id="description" property="description"/>
+                <column id="invoice">
+                    <textRenderer nullRepresentation="null"/>
+                </column>
+                <column id="serviceCompletionCertificate">
+                    <componentRenderer/>
+                </column>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

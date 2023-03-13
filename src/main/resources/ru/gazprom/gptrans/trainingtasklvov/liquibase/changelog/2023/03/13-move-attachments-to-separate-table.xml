@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="ttl">
+        <createTable tableName="TTL_ATTACHMENT">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TTL_ATTACHMENT"/>
+            </column>
+            <column name="FILE_" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="DELETED_BY" type="VARCHAR(255)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
+            <column name="INVOICE_ID" type="UUID"/>
+            <column name="CONTRACT_ID" type="UUID"/>
+            <column name="SERVICE_COMPLETION_CERTIFICATE_ID" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="ttl">
+        <createIndex indexName="IDX_TTL_ATTACHMENT_CONTRACT" tableName="TTL_ATTACHMENT">
+            <column name="CONTRACT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="CONTRACT_ID" baseTableName="TTL_ATTACHMENT"
+                                 constraintName="FK_TTL_ATTACHMENT_ON_CONTRACT" referencedColumnNames="ID"
+                                 referencedTableName="TTL_CONTRACT"/>
+    </changeSet>
+    <changeSet id="3" author="ttl">
+        <createIndex indexName="IDX_TTL_ATTACHMENT_INVOICE" tableName="TTL_ATTACHMENT">
+            <column name="INVOICE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="INVOICE_ID" baseTableName="TTL_ATTACHMENT"
+                                 constraintName="FK_TTL_ATTACHMENT_ON_INVOICE" referencedColumnNames="ID"
+                                 referencedTableName="TTL_INVOICE"/>
+    </changeSet>
+    <changeSet id="4" author="ttl">
+        <createIndex indexName="IDX_TTL_ATTACHMENT_SERVICE_COMPLETION_CERTIFICATE" tableName="TTL_ATTACHMENT">
+            <column name="SERVICE_COMPLETION_CERTIFICATE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="SERVICE_COMPLETION_CERTIFICATE_ID" baseTableName="TTL_ATTACHMENT"
+                                 constraintName="FK_TTL_ATTACHMENT_ON_SERVICE_COMPLETION_CERTIFICATE"
+                                 referencedColumnNames="ID" referencedTableName="TTL_SERVICE_COMPLETION_CERTIFICATE"/>
+    </changeSet>
+    <changeSet id="5" author="ttl">
+        <dropColumn columnName="files" tableName="ttl_contract"/>
+    </changeSet>
+    <changeSet id="6" author="ttl">
+        <dropColumn columnName="files" tableName="ttl_invoice"/>
+    </changeSet>
+    <changeSet id="7" author="ttl">
+        <dropColumn columnName="files" tableName="ttl_service_completion_certificate"/>
+    </changeSet>
+</databaseChangeLog>

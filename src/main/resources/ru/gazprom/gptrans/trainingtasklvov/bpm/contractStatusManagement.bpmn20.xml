@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:jmix="http://jmix.io/schema/bpm/bpmn" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.flowable.org/processdef">
+  <process id="contractStatusManagement" name="ContractStatusManagement" isExecutable="true">
+    <startEvent id="startEvent1">
+      <extensionElements>
+        <jmix:formData type="no-form" />
+        <jmix:processVariables>
+          <jmix:processVariable name="contract" type="entity">
+            <jmix:processVariableProperty name="entityName" value="ttl_Contract" />
+          </jmix:processVariable>
+          <jmix:processVariable name="manager" type="entity">
+            <jmix:processVariableProperty name="entityName" value="ttl_User" />
+          </jmix:processVariable>
+        </jmix:processVariables>
+      </extensionElements>
+      <outgoing>Flow_1hw41jd</outgoing>
+    </startEvent>
+    <sequenceFlow id="Flow_1hw41jd" sourceRef="startEvent1" targetRef="approval">
+      <extensionElements>
+        <jmix:conditionDetails conditionSource="expression" />
+      </extensionElements>
+    </sequenceFlow>
+    <userTask id="approval" name="Согласование смены статуса договора" flowable:assignee="${manager.username}" jmix:assigneeSource="processVariable" jmix:assigneeValue="manager">
+      <documentation>Смена статуса договора</documentation>
+      <extensionElements>
+        <jmix:formData type="jmix-screen" openMode="THIS_TAB" screenId="ttl_Contract.edit">
+          <jmix:formParams>
+            <jmix:formParam name="contract" value="contract" valueSource="processVariable" />
+          </jmix:formParams>
+          <jmix:formOutcomes>
+            <jmix:formOutcome id="approve" />
+            <jmix:formOutcome id="reject" />
+          </jmix:formOutcomes>
+        </jmix:formData>
+      </extensionElements>
+      <incoming>Flow_1hw41jd</incoming>
+      <outgoing>Flow_1xy8b3r</outgoing>
+    </userTask>
+    <exclusiveGateway id="Gateway_1bzgorp">
+      <incoming>Flow_1xy8b3r</incoming>
+      <outgoing>approve</outgoing>
+      <outgoing>reject</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_1xy8b3r" sourceRef="approval" targetRef="Gateway_1bzgorp" />
+    <sequenceFlow id="approve" name="approve" sourceRef="Gateway_1bzgorp" targetRef="changeStatusIfApproved">
+      <extensionElements>
+        <jmix:conditionDetails conditionSource="expression" />
+      </extensionElements>
+    </sequenceFlow>
+    <serviceTask id="changeStatusIfApproved" name="Согласовано" flowable:expression="${ttl_ContractManagementService.changeContractStatus(contract, statusCode)}" jmix:taskType="springBean" jmix:beanName="ttl_ContractManagementService">
+      <extensionElements>
+        <jmix:springBean beanName="ttl_ContractManagementService" methodName="changeContractStatus">
+          <jmix:methodParam name="contract" type="ru.gazprom.gptrans.trainingtasklvov.entity.Contract" isVariable="true">contract</jmix:methodParam>
+          <jmix:methodParam name="statusCode" type="java.lang.String" isVariable="true">statusCode</jmix:methodParam>
+        </jmix:springBean>
+      </extensionElements>
+      <incoming>approve</incoming>
+      <outgoing>Flow_0jgv4qj</outgoing>
+    </serviceTask>
+    <sequenceFlow id="reject" name="reject" sourceRef="Gateway_1bzgorp" targetRef="changeStatusIfRejected">
+      <extensionElements>
+        <jmix:conditionDetails conditionSource="expression" />
+      </extensionElements>
+    </sequenceFlow>
+    <serviceTask id="changeStatusIfRejected" name="Отклонено" flowable:expression="${ttl_ContractManagementService.changeContractStatus(contract, statusCode)}" jmix:taskType="springBean" jmix:beanName="ttl_ContractManagementService">
+      <extensionElements>
+        <jmix:springBean beanName="ttl_ContractManagementService" methodName="changeContractStatus">
+          <jmix:methodParam name="contract" type="ru.gazprom.gptrans.trainingtasklvov.entity.Contract" isVariable="true">contract</jmix:methodParam>
+          <jmix:methodParam name="statusCode" type="java.lang.String" isVariable="true">statusCode</jmix:methodParam>
+        </jmix:springBean>
+      </extensionElements>
+      <incoming>reject</incoming>
+      <outgoing>Flow_153df7a</outgoing>
+    </serviceTask>
+    <endEvent id="Event_1wvkjl1">
+      <incoming>Flow_1elkcdt</incoming>
+    </endEvent>
+    <sequenceFlow id="Flow_0jgv4qj" sourceRef="changeStatusIfApproved" targetRef="emailSend" />
+    <serviceTask id="emailSend" name="Отправка уведомления" flowable:type="jmix-send-email">
+      <extensionElements>
+        <flowable:field name="to">
+          <flowable:string>${initiator.email},${manager.email}</flowable:string>
+        </flowable:field>
+        <flowable:field name="subject">
+          <flowable:string>Смена статуса договора</flowable:string>
+        </flowable:field>
+        <flowable:field name="from">
+          <flowable:string>no-reply@gptrans-test.ru</flowable:string>
+        </flowable:field>
+        <flowable:field name="content">
+          <flowable:string>Статус договора № ${contract.number} изменен!&lt;div&gt;Новый статус - ${contract.status.name}&lt;/div&gt;</flowable:string>
+        </flowable:field>
+        <flowable:field name="contentType">
+          <flowable:string>text/html; charset=UTF-8</flowable:string>
+        </flowable:field>
+        <flowable:field name="sendAsync">
+          <flowable:string>true</flowable:string>
+        </flowable:field>
+      </extensionElements>
+      <incoming>Flow_0jgv4qj</incoming>
+      <incoming>Flow_153df7a</incoming>
+      <outgoing>Flow_1elkcdt</outgoing>
+    </serviceTask>
+    <sequenceFlow id="Flow_1elkcdt" sourceRef="emailSend" targetRef="Event_1wvkjl1" />
+    <sequenceFlow id="Flow_153df7a" sourceRef="changeStatusIfRejected" targetRef="emailSend">
+      <extensionElements>
+        <jmix:conditionDetails conditionSource="expression" />
+      </extensionElements>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_process">
+    <bpmndi:BPMNPlane id="BPMNPlane_process" bpmnElement="contractStatusManagement">
+      <bpmndi:BPMNEdge id="Flow_153df7a_di" bpmnElement="Flow_153df7a">
+        <omgdi:waypoint x="590" y="300" />
+        <omgdi:waypoint x="640" y="300" />
+        <omgdi:waypoint x="640" y="165" />
+        <omgdi:waypoint x="700" y="165" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1elkcdt_di" bpmnElement="Flow_1elkcdt">
+        <omgdi:waypoint x="800" y="165" />
+        <omgdi:waypoint x="872" y="165" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jgv4qj_di" bpmnElement="Flow_0jgv4qj">
+        <omgdi:waypoint x="590" y="165" />
+        <omgdi:waypoint x="700" y="165" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f7fgqf_di" bpmnElement="reject">
+        <omgdi:waypoint x="410" y="190" />
+        <omgdi:waypoint x="410" y="300" />
+        <omgdi:waypoint x="490" y="300" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="452" y="278" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cpif6k_di" bpmnElement="approve">
+        <omgdi:waypoint x="435" y="165" />
+        <omgdi:waypoint x="490" y="165" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="443" y="147" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xy8b3r_di" bpmnElement="Flow_1xy8b3r">
+        <omgdi:waypoint x="330" y="165" />
+        <omgdi:waypoint x="385" y="165" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hw41jd_di" bpmnElement="Flow_1hw41jd">
+        <omgdi:waypoint x="180" y="165" />
+        <omgdi:waypoint x="230" y="165" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_startEvent1" bpmnElement="startEvent1">
+        <omgdc:Bounds x="150" y="150" width="30" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qyhc8o_di" bpmnElement="approval">
+        <omgdc:Bounds x="230" y="125" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1bzgorp_di" bpmnElement="Gateway_1bzgorp" isMarkerVisible="true">
+        <omgdc:Bounds x="385" y="140" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0alcs52_di" bpmnElement="changeStatusIfApproved">
+        <omgdc:Bounds x="490" y="125" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sx5ycq_di" bpmnElement="changeStatusIfRejected">
+        <omgdc:Bounds x="490" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1wvkjl1_di" bpmnElement="Event_1wvkjl1">
+        <omgdc:Bounds x="872" y="147" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bn310f_di" bpmnElement="emailSend">
+        <omgdc:Bounds x="700" y="125" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

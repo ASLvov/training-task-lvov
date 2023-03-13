@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://contractBrowse.caption"
+        focusComponent="contractsTable">
+    <data readOnly="true">
+        <collection id="contractsDc"
+                    class="ru.gazprom.gptrans.trainingtasklvov.entity.Contract">
+            <fetchPlan extends="_base">
+                <property name="customer" fetch="JOIN">
+                    <property name="name"/>
+                </property>
+                <property name="performer" fetch="JOIN">
+                    <property name="name"/>
+                </property>
+                <property name="status">
+                    <property name="name"/>
+                </property>
+            </fetchPlan>
+            <loader id="contractsDl">
+                <query>
+                    <![CDATA[select e from ttl_Contract e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="contractsTable" spacing="true">
+        <filter id="filter"
+                dataLoader="contractsDl">
+            <properties include=".*"/>
+        </filter>
+        <dataGrid id="contractsTable"
+                    width="100%"
+                    dataContainer="contractsDc">
+            <actions>
+                <action id="add" type="add"/>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="refresh" type="refresh"/>
+                <action id="remove" type="remove"/>
+                <action id="bpmMoveStatus"/>
+            </actions>
+            <columns>
+                <column id="customer" property="customer"/>
+                <column id="performer" property="performer"/>
+                <column id="number" property="number"/>
+                <column id="signedDate" property="signedDate"/>
+                <column id="type" property="type"/>
+                <column id="dateFrom" property="dateFrom"/>
+                <column id="dateTo" property="dateTo"/>
+                <column id="amount" property="amount"/>
+                <column id="vat" property="vat"/>
+                <column id="totalAmount" property="totalAmount"/>
+                <column id="customerSigner" property="customerSigner"/>
+                <column id="performerSigner" property="performerSigner"/>
+                <column id="status" property="status"/>
+                <column id="files" property="files"/>
+            </columns>
+            <simplePagination/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="addBtn" action="contractsTable.add"/>
+                <button id="createBtn" action="contractsTable.create"/>
+                <button id="editBtn" action="contractsTable.edit"/>
+                <button id="refreshBtn" action="contractsTable.refresh"/>
+                <button id="removeBtn" action="contractsTable.remove"/>
+                <button id="bpmMoveStatus" action="contractsTable.bpmMoveStatus" enable="false" visible="false"/>
+            </buttonsPanel>
+        </dataGrid>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>
