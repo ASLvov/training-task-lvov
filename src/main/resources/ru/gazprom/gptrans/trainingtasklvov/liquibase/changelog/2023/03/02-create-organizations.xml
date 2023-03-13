@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet author="lvov" id="1">
+        <insert tableName="ttl_organization">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="NAME" value="ООО 'Газпромтранс'"/>
+            <column name="TAX_NUMBER" value="7728262893"/>
+            <column name="REGISTRATION_NUMBER" value="1027728000871"/>
+            <column name="ESCAPE_VAT" valueBoolean="false"/>
+            <column name="VERSION" valueNumeric="1"/>
+            <column name="CREATED_BY" value="60885987-1b61-4247-94c7-dff348347f93"/>
+            <column name="CREATED_DATE" valueDate="now()"/>
+            <column name="LAST_MODIFIED_BY" value="60885987-1b61-4247-94c7-dff348347f93"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="now()"/>
+        </insert>
+        <insert tableName="ttl_organization">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="NAME" value="ООО 'Юкон'"/>
+            <column name="TAX_NUMBER" value="6325017953"/>
+            <column name="REGISTRATION_NUMBER" value="1036301250556"/>
+            <column name="ESCAPE_VAT" valueBoolean="false"/>
+            <column name="VERSION" valueNumeric="1"/>
+            <column name="CREATED_BY" value="60885987-1b61-4247-94c7-dff348347f93"/>
+            <column name="CREATED_DATE" valueDate="now()"/>
+            <column name="LAST_MODIFIED_BY" value="60885987-1b61-4247-94c7-dff348347f93"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="now()"/>
+        </insert>
+        <insert tableName="ttl_organization">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="NAME" value="ООО 'УРЕНГОЙТРАНСОЙЛ'"/>
+            <column name="TAX_NUMBER" value="8904059612"/>
+            <column name="REGISTRATION_NUMBER" value="1098904000293"/>
+            <column name="ESCAPE_VAT" valueBoolean="false"/>
+            <column name="VERSION" valueNumeric="1"/>
+            <column name="CREATED_BY" value="60885987-1b61-4247-94c7-dff348347f93"/>
+            <column name="CREATED_DATE" valueDate="now()"/>
+            <column name="LAST_MODIFIED_BY" value="60885987-1b61-4247-94c7-dff348347f93"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="now()"/>
+        </insert>
+        <insert tableName="ttl_organization">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="NAME" value="ИП Абдулаев А.И."/>
+            <column name="TAX_NUMBER" value="054402700393"/>
+            <column name="REGISTRATION_NUMBER" value="304054409700091"/>
+            <column name="ESCAPE_VAT" valueBoolean="true"/>
+            <column name="VERSION" valueNumeric="1"/>
+            <column name="CREATED_BY" value="60885987-1b61-4247-94c7-dff348347f93"/>
+            <column name="CREATED_DATE" valueDate="now()"/>
+            <column name="LAST_MODIFIED_BY" value="60885987-1b61-4247-94c7-dff348347f93"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="now()"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

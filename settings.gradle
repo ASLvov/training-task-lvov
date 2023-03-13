@@ -1,0 +1,9 @@
+pluginManagement {
+    repositories {
+        maven {
+            allowInsecureProtocol = true
+            url "http://mos-nrepo-alt:8081/repository/Gradle_Repo/"
+        }
+    }
+}
+rootProject.name = 'training-task-lvov'

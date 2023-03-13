@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://contractEdit.caption"
+        focusComponent="formLeft">
+    <data>
+        <instance id="contractDc"
+                  class="ru.gazprom.gptrans.trainingtasklvov.entity.Contract">
+            <fetchPlan extends="_base">
+                <property name="customer" fetchPlan="_base"/>
+                <property name="performer" fetchPlan="_base"/>
+                <property name="status" fetchPlan="_base"/>
+                <property name="stages" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="contractStagesDc" class="ru.gazprom.gptrans.trainingtasklvov.entity.Stage">
+            <fetchPlan extends="_base">
+                <property name="invoice" fetchPlan="_base"/>
+                <property name="serviceCompletionCertificate" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="contractStagesDl"/>
+        </collection>
+        <collection id="attachments" class="ru.gazprom.gptrans.trainingtasklvov.entity.Attachment">
+            <fetchPlan extends="_base"/>
+            <loader id="attachmentsDl"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout spacing="true" expand="scrollBox">
+        <scrollBox id="scrollBox" spacing="true">
+            <split orientation="horizontal" height="100%" width="100%" maxSplitPosition="30%">
+                <form id="formLeft" dataContainer="contractDc" height="100%" width="100%">
+                    <column width="350px">
+                        <entityPicker id="customerField" property="customer" required="true">
+                            <actions>
+                                <action id="entityLookup" type="entity_lookup"/>
+                                <action id="entityClear" type="entity_clear"/>
+                            </actions>
+                        </entityPicker>
+                        <entityPicker id="performerField" property="performer" required="true">
+                            <actions>
+                                <action id="entityLookup" type="entity_lookup"/>
+                                <action id="entityClear" type="entity_clear"/>
+                            </actions>
+                        </entityPicker>
+                        <textField id="numberField" property="number" required="true"/>
+                        <dateField id="signedDateField" property="signedDate" datatype="date" required="true"/>
+                        <comboBox id="typeField" property="type" required="true"/>
+                        <dateField id="dateFromField" property="dateFrom" datatype="date" required="true"/>
+                        <dateField id="dateToField" property="dateTo" datatype="date" required="true"/>
+                        <textField id="amountField" property="amount" required="true"/>
+                        <textField id="vatField" property="vat" editable="false"/>
+                        <textField id="totalAmountField" property="totalAmount" editable="false"/>
+                        <textField id="customerSignerField" property="customerSigner" required="true"/>
+                        <textField id="performerSignerField" property="performerSigner" required="true"/>
+                        <entityPicker id="statusField" property="status" editable="false">
+                            <actions>
+                                <action id="entityLookup" type="entity_lookup"/>
+                                <action id="entityClear" type="entity_clear"/>
+                            </actions>
+                        </entityPicker>
+                        <dataGrid id="attachments" dataContainer="attachments">
+                            <buttonsPanel>
+                                <fileMultiUpload id="filesField" caption="Загрузить"/>
+                            </buttonsPanel>
+                            <columns>
+                                <column id="number" caption="№">
+                                    <textRenderer nullRepresentation="null"/>
+                                </column>
+                                <column id="fileName" caption="Файл">
+                                    <textRenderer nullRepresentation="null"/>
+                                </column>
+                            </columns>
+                        </dataGrid>
+                    </column>
+                </form>
+                <form id="formRight" height="100%" width="100%">
+                    <dataGrid id="contractStages" dataContainer="contractStagesDc"
+                              height="100%" width="100%">
+                        <buttonsPanel id="contractStagesButtonPanel">
+                            <button id="createBtn" action="contractStages.create" enable="false"/>
+                            <button id="removeBtn" action="contractStages.remove"/>
+                        </buttonsPanel>
+                        <actions>
+                            <action id="create" type="create"/>
+                            <action id="remove" type="remove"/>
+                        </actions>
+                        <columns>
+                            <column id="name" property="name"/>
+                            <column id="dateFrom" property="dateFrom"/>
+                            <column id="dateTo" property="dateTo"/>
+                            <column id="amount" property="amount"/>
+                            <column id="vat" property="vat"/>
+                            <column id="totalAmount" property="totalAmount"/>
+                            <column id="description" property="description"/>
+                            <column id="invoice" property="invoice.number" caption="Счет-фактура"/>
+                            <column id="serviceCompletionCertificate" property="serviceCompletionCertificate.number"
+                                    caption="Акт выполненных работ"/>
+                        </columns>
+                    </dataGrid>
+                </form>
+            </split>
+        </scrollBox>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+            <button id="approveAndCloseBtn" icon="font-icon:CHECK" caption="Согласовать" visible="false"/>
+            <button id="rejectBtn" icon="font-icon:BAN" caption="Отклонить" visible="false"/>
+        </hbox>
+    </layout>
+</window>
