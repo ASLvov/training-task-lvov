@@ -7,12 +7,8 @@
         <collection id="stagesDc"
                     class="ru.gazprom.gptrans.trainingtasklvov.entity.Stage">
             <fetchPlan extends="_base">
-                <property name="invoice" fetch="JOIN">
-                    <property name="number"/>
-                </property>
-                <property name="serviceCompletionCertificate" fetch="JOIN">
-                    <property name="number"/>
-                </property>
+                <property name="invoice" fetchPlan="_base"/>
+                <property name="serviceCompletionCertificate" fetchPlan="_base"/>
             </fetchPlan>
             <loader id="stagesDl">
                 <query>
@@ -38,37 +34,33 @@
     <dialogMode height="600"
                 width="800"/>
     <layout expand="stagesTable" spacing="true">
-        <groupTable id="stagesTable"
-                    width="100%"
-                    dataContainer="stagesDc">
+        <dataGrid id="stagesTable" height="100%" width="100%" dataContainer="stagesDc">
             <actions>
-<!--                <action id="add" type="add"/>-->
-<!--                <action id="create" type="create"/>-->
                 <action id="edit" type="edit"/>
                 <action id="refresh" type="refresh"/>
                 <action id="remove" type="remove"/>
             </actions>
-            <columns>
-                <column id="name"/>
-                <column id="dateFrom"/>
-                <column id="dateTo"/>
-                <column id="amount"/>
-                <column id="vat"/>
-                <column id="totalAmount"/>
-                <column id="description"/>
-                <column id="invoice"/>
-                <column id="serviceCompletionCertificate"/>
-            </columns>
-            <simplePagination/>
-            <buttonsPanel id="buttonsPanel"
-                          alwaysVisible="true">
-<!--                <button id="addBtn" action="stagesTable.add"/>-->
-<!--                <button id="createBtn" action="stagesTable.create"/>-->
-                <button id="editBtn" action="stagesTable.edit"/>
-                <button id="refreshBtn" action="stagesTable.refresh"/>
-                <button id="removeBtn" action="stagesTable.remove"/>
+            <buttonsPanel alwaysVisible="true">
+                <button id="stagesTableEditBtn" action="stagesTable.edit"/>
+                <button id="stagesTableRefreshBtn" action="stagesTable.refresh"/>
+                <button id="stagesTableRemoveBtn" action="stagesTable.remove"/>
             </buttonsPanel>
-        </groupTable>
+            <columns>
+                <column id="name" property="name"/>
+                <column id="dateFrom" property="dateFrom"/>
+                <column id="dateTo" property="dateTo"/>
+                <column id="amount" property="amount"/>
+                <column id="vat" property="vat"/>
+                <column id="totalAmount" property="totalAmount"/>
+                <column id="description" property="description"/>
+                <column id="invoice">
+                    <textRenderer nullRepresentation="null"/>
+                </column>
+                <column id="serviceCompletionCertificate">
+                    <componentRenderer/>
+                </column>
+            </columns>
+        </dataGrid>
         <hbox id="lookupActions" spacing="true" visible="false">
             <button action="lookupSelectAction"/>
             <button action="lookupCancelAction"/>

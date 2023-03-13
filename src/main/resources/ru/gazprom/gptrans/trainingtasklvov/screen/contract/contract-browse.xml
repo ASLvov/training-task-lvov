@@ -45,7 +45,7 @@
                 dataLoader="contractsDl">
             <properties include=".*"/>
         </filter>
-        <groupTable id="contractsTable"
+        <dataGrid id="contractsTable"
                     width="100%"
                     dataContainer="contractsDc">
             <actions>
@@ -54,22 +54,23 @@
                 <action id="edit" type="edit"/>
                 <action id="refresh" type="refresh"/>
                 <action id="remove" type="remove"/>
+                <action id="bpmMoveStatus"/>
             </actions>
             <columns>
-                <column id="customer"/>
-                <column id="performer"/>
-                <column id="number"/>
-                <column id="signedDate"/>
-                <column id="type"/>
-                <column id="dateFrom"/>
-                <column id="dateTo"/>
-                <column id="amount"/>
-                <column id="vat"/>
-                <column id="totalAmount"/>
-                <column id="customerSigner"/>
-                <column id="performerSigner"/>
-                <column id="status"/>
-                <column id="files"/>
+                <column id="customer" property="customer"/>
+                <column id="performer" property="performer"/>
+                <column id="number" property="number"/>
+                <column id="signedDate" property="signedDate"/>
+                <column id="type" property="type"/>
+                <column id="dateFrom" property="dateFrom"/>
+                <column id="dateTo" property="dateTo"/>
+                <column id="amount" property="amount"/>
+                <column id="vat" property="vat"/>
+                <column id="totalAmount" property="totalAmount"/>
+                <column id="customerSigner" property="customerSigner"/>
+                <column id="performerSigner" property="performerSigner"/>
+                <column id="status" property="status"/>
+                <column id="files" property="files"/>
             </columns>
             <simplePagination/>
             <buttonsPanel id="buttonsPanel"
@@ -79,8 +80,9 @@
                 <button id="editBtn" action="contractsTable.edit"/>
                 <button id="refreshBtn" action="contractsTable.refresh"/>
                 <button id="removeBtn" action="contractsTable.remove"/>
+                <button id="bpmMoveStatus" action="contractsTable.bpmMoveStatus" enable="false" visible="false"/>
             </buttonsPanel>
-        </groupTable>
+        </dataGrid>
         <hbox id="lookupActions" spacing="true" visible="false">
             <button action="lookupSelectAction"/>
             <button action="lookupCancelAction"/>

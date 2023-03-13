@@ -129,20 +129,20 @@ public class Contract {
     @OneToMany(mappedBy = "contract")
     private List<Stage> stages;
 
-    public void setStages(List<Stage> stages) {
-        this.stages = stages;
-    }
-
-    public List<Stage> getStages() {
-        return stages;
+    public void setFiles(FileRef files) {
+        this.files = files;
     }
 
     public FileRef getFiles() {
         return files;
     }
 
-    public void setFiles(FileRef files) {
-        this.files = files;
+    public void setStages(List<Stage> stages) {
+        this.stages = stages;
+    }
+
+    public List<Stage> getStages() {
+        return stages;
     }
 
     public Status getStatus() {

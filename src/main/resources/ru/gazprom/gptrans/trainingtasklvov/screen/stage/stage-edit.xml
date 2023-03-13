@@ -6,12 +6,6 @@
         <instance id="stageDc"
                   class="ru.gazprom.gptrans.trainingtasklvov.entity.Stage">
             <fetchPlan extends="_base">
-                <property name="invoice" fetch="JOIN">
-                    <property name="number"/>
-                </property>
-                <property name="serviceCompletionCertificate" fetch="JOIN">
-                    <property name="number"/>
-                </property>
                 <property name="contract" fetchPlan="_base"/>
             </fetchPlan>
             <loader/>
@@ -42,16 +36,12 @@
                 <textField id="vatField" property="vat" editable="false"/>
                 <textField id="totalAmountField" property="totalAmount" editable="false"/>
                 <textArea id="descriptionField" property="description" rows="5"/>
-                <entityPicker id="invoiceField" property="invoice" editable="false"/>
-                <entityPicker id="serviceCompletionCertificateField" property="serviceCompletionCertificate"
-                              editable="false"/>
                 <entityPicker id="contractField" property="contract" editable="false" required="true"/>
             </column>
         </form>
         <hbox id="editActions" spacing="true">
             <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
             <button id="closeBtn" action="windowClose"/>
-            <button id="creteClosingDocsBtn" caption="Создать закрывающие документы"/>
         </hbox>
     </layout>
 </window>

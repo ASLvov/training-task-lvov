@@ -1,5 +1,10 @@
 package ru.gazprom.gptrans.trainingtasklvov.screen.contract;
 
+import io.jmix.bpmui.processform.ProcessFormContext;
+import io.jmix.bpmui.processform.annotation.Outcome;
+import io.jmix.bpmui.processform.annotation.Param;
+import io.jmix.bpmui.processform.annotation.ProcessForm;
+import io.jmix.bpmui.processform.annotation.ProcessFormParam;
 import io.jmix.core.DataManager;
 import io.jmix.core.LoadContext;
 import io.jmix.ui.Dialogs;
@@ -14,6 +19,7 @@ import io.jmix.ui.screen.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.gazprom.gptrans.trainingtasklvov.app.ContractManagementService;
 import ru.gazprom.gptrans.trainingtasklvov.configuration.VatConfiguration;
 import ru.gazprom.gptrans.trainingtasklvov.entity.Contract;
 import ru.gazprom.gptrans.trainingtasklvov.entity.Organization;
@@ -25,13 +31,20 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @UiController("ttl_Contract.edit")
 @UiDescriptor("contract-edit.xml")
 @EditedEntityContainer("contractDc")
+@ProcessForm(
+        params = {
+                @Param(name = "contract")
+        },
+        outcomes = {
+                @Outcome(id = "approve"),
+                @Outcome(id = "reject")
+        }
+)
 public class ContractEdit extends StandardEditor<Contract> {
-    private static final String DEFAULT_STAGE_NAME = "Начало и конец";
     @Autowired
     private InstanceContainer<Contract> contractDc;
     @Autowired
@@ -50,6 +63,16 @@ public class ContractEdit extends StandardEditor<Contract> {
     private Notifications notifications;
     @Autowired
     private Button createBtn;
+    @Autowired
+    private ProcessFormContext processFormContext;
+    @Autowired
+    private ContractManagementService contractManagementService;
+    @Autowired
+    private Button approveAndCloseBtn;
+    @Autowired
+    private Button rejectBtn;
+    @ProcessFormParam(name = "contract")
+    private Contract contractVariable;
 
     @Install(to = "contractStagesDl", target = Target.DATA_LOADER)
     private List<Stage> contractStagesDlLoadDelegate(LoadContext<Stage> loadContext) {
@@ -67,7 +90,12 @@ public class ContractEdit extends StandardEditor<Contract> {
             amountField.setValue(null);
             return;
         }
-        double amount = Objects.requireNonNull(event.getValue()).doubleValue();
+        double amount;
+        if (event.getValue() == null) {
+            amount = 0;
+        } else {
+            amount = event.getValue().doubleValue();
+        }
         double vatAmount;
         double totalAmount;
         if (performer.getEscapeVat()) {
@@ -102,7 +130,7 @@ public class ContractEdit extends StandardEditor<Contract> {
 
     @Subscribe
     public void onBeforeCommitChanges(BeforeCommitChangesEvent event) {
-        Contract contract = contractDc.getItem();
+        Contract contract = getEditedEntity();
         if (!checkRequiredParameters(contract)) {
             notifications.create()
                     .withCaption("Заполните обязательные поля!")
@@ -119,7 +147,7 @@ public class ContractEdit extends StandardEditor<Contract> {
                             new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY)
                                     .withHandler(e -> {
                                         event.resume();
-                                        createContractWithDefaultStage(contract);
+                                        contractManagementService.createContractWithDefaultStage(contract);
                                     }),
                             new DialogAction(DialogAction.Type.NO)
                     )
@@ -129,35 +157,55 @@ public class ContractEdit extends StandardEditor<Contract> {
     }
 
     private boolean checkRequiredParameters(Contract contract) {
-        if (contract.getCustomer() == null || contract.getPerformer() == null || contract.getSignedDate() == null ||
-                contract.getType() == null || contract.getDateFrom() == null || contract.getDateTo() == null ||
-                contract.getAmount() == null || StringUtils.isBlank(contract.getCustomerSigner()) ||
-                StringUtils.isBlank(contract.getNumber()) || StringUtils.isBlank(contract.getPerformerSigner())) {
-            return false;
-        }
-        return true;
-    }
-
-    private void createContractWithDefaultStage(Contract contract) {
-        Stage stage = dataManager.create(Stage.class);
-        stage.setId(UUID.randomUUID());
-        stage.setName(DEFAULT_STAGE_NAME);
-        stage.setDescription(DEFAULT_STAGE_NAME);
-        stage.setDateFrom(contract.getDateFrom());
-        stage.setDateTo(contract.getDateTo());
-        stage.setAmount(contract.getAmount());
-        stage.setVat(contract.getVat());
-        stage.setTotalAmount(contract.getTotalAmount());
-        stage.setContract(contract);
-        contract.setStages(Collections.singletonList(stage));
-        dataManager.save(stage, contract);
+        return contract.getCustomer() != null && contract.getPerformer() != null && contract.getSignedDate() != null &&
+                contract.getType() != null && contract.getDateFrom() != null && contract.getDateTo() != null &&
+                contract.getAmount() != null && StringUtils.isNotBlank(contract.getCustomerSigner()) &&
+                StringUtils.isNotBlank(contract.getNumber()) && StringUtils.isNotBlank(contract.getPerformerSigner());
     }
 
     @Subscribe(id = "contractDc", target = Target.DATA_CONTAINER)
     public void onContractDcItemPropertyChange(InstanceContainer.ItemPropertyChangeEvent<Contract> event) {
         Contract contract = contractDc.getItem();
-        if (checkRequiredParameters(contract)) {
-            createBtn.setEnabled(true);
+        createBtn.setEnabled(checkRequiredParameters(contract));
+    }
+
+    @Subscribe("approveAndCloseBtn")
+    public void onApproveAndCloseBtnClick(Button.ClickEvent event) {
+        completeTaskWithOutcome("approve");
+    }
+
+    @Subscribe("rejectBtn")
+    public void onRejectBtnClick(Button.ClickEvent event) {
+        completeTaskWithOutcome("reject");
+    }
+
+    private void completeTaskWithOutcome(String outcome) {
+        Contract contract = getEditedEntity();
+        String statusCode = contractManagementService.getNextStatusCodeByInstanceAndOutcome(contract, outcome);
+        commitChanges();
+        processFormContext.taskCompletion()
+                .withOutcome(outcome)
+                .addProcessVariable("statusCode", statusCode)
+                .saveInjectedProcessVariables()
+                .complete();
+        closeWithDefaultAction();
+    }
+
+    @Subscribe
+    public void onInit(InitEvent event) {
+        if (Objects.nonNull(contractVariable)) {
+            setEntityToEdit(contractVariable);
+            if ("TO_APPROVAL".equalsIgnoreCase(contractVariable.getStatus().getCode())) {
+                approveAndCloseBtn.setVisible(true);
+                approveAndCloseBtn.setCaption("Согласовать");
+                rejectBtn.setVisible(true);
+            } else if ("ACTIVE".equalsIgnoreCase(contractVariable.getStatus().getCode())) {
+                approveAndCloseBtn.setVisible(true);
+                approveAndCloseBtn.setCaption("Согласовать завершение");
+            } else {
+                approveAndCloseBtn.setVisible(false);
+                rejectBtn.setVisible(false);
+            }
         }
     }
 }
